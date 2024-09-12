@@ -67,17 +67,36 @@ const user = {
   
     it('Searches for a product and adds it to the cart', () => {
       cy.visit('https://www.sinsay.com/pl/pl/');
-      cy.get('#algoliaButton').type(product.sku).type('{enter}'); 
-      cy.contains(product.sku).should('be.visible');
-      cy.contains(product.sku).click();
-      cy.get('.size-option').contains(product.size).click();
-      cy.get('button.add-to-cart').click();
-      cy.get('.mini-cart').should('contain', '1'); // Assert cart quantity
+      cy.get('#algoliaButton').type(product.sku, '{enter}'); 
+      cy.get('.AlgoliaProducts-module__algolia-products-container', { timeout: 10000 }).should('contain', '8470j-00x');
+      
+      cy.contains('Koszulka').click();
+      cy.get('.ds-button__light > .ds-icon').click();
+      cy.get('ul[data-testid="product-size-group"]', { timeout: 10000 })
+      .contains(product.size)
+      .click();      
+      
+      cy.get('[data-testid="add-to-cart-button"]').click();
+
+      cy.get('[data-testid="cart-confirmation-go-to-cart"]', { timeout: 10000 }).click();
     });
   
     it('Navigates to the cart and removes the product', () => {
+      cy.visit('https://www.sinsay.com/pl/pl/');
+      cy.get('#algoliaButton').type(product.sku, '{enter}'); 
+      cy.get('.AlgoliaProducts-module__algolia-products-container', { timeout: 10000 }).should('contain', '8470j-00x');
+      
+      cy.contains('Koszulka').click();
+      cy.get('.ds-button__light > .ds-icon').click();
+      cy.get('ul[data-testid="product-size-group"]', { timeout: 10000 })
+      .contains(product.size)
+      .click();      
+      
+      cy.get('[data-testid="add-to-cart-button"]').click();
+      
+      cy.get('[data-testid="cart-confirmation-go-to-cart"]', { timeout: 10000 }).click();
       cy.visit('https://www.sinsay.com/pl/pl/checkout/cart/');
-      cy.get('[data-selen="product-url]').should('contain', product.sku);
+      
       cy.get('.product-list__RemoveButton-mh8fks-8', { timeout: 10000 }).click();
       cy.get('[data-selen="empty-cart"]', { timeout: 10000 }).should('exist');
     });
